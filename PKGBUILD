@@ -7,7 +7,7 @@ _linuxprefix=linux612
 pkgname="${_linuxprefix}-nvidia"
 pkgdesc="NVIDIA drivers for linux"
 pkgver=560.35.03
-pkgrel=0.3
+pkgrel=0.4
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -18,15 +18,25 @@ provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
 options=(!strip)
 _durl="https://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
-        kernel612.patch)
+        'make-modeset-fbdev-default.patch'
+        'kernel612.patch')
 sha256sums=('7ec3795748cd79ea6f553a6cc0a54385b3c6b9e9b9efdf008a0dbedd7b2471bd'
+            '03e9c10852312cff661380611b201d7bd45d3869b28d57c3614f7a4bb033c59f'
             '2ed70851ff369dff213978cee8b7b2d88944db280edec3dcf69481508cf1f7a6')
 
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
 prepare() {
     sh "${_pkg}.run" --extract-only
+
     cd "${_pkg}"
+
+    # Enable modeset and fbdev as default
+    # This avoids various issue, when Simplefb is used
+    # https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/issues/14
+    # https://github.com/rpmfusion/nvidia-kmod/blob/master/make_modeset_default.patch
+    patch -Np1 < "$srcdir"/make-modeset-fbdev-default.patch
+
     patch -p1 -i ../kernel612.patch
 }
 
