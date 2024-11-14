@@ -7,7 +7,7 @@ _linuxprefix=linux612
 pkgname="${_linuxprefix}-nvidia"
 pkgdesc="NVIDIA drivers for linux"
 pkgver=565.57.01
-pkgrel=0.5
+pkgrel=0.6
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -18,11 +18,11 @@ provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
 options=(!strip)
 _durl="https://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
-        'kernel612.patch'
-        'make-modeset-fbdev-default.patch')
+        'make-modeset-fbdev-default.patch'
+        'nvidia-drm-Set-FOP_UNSIGNED_OFFSET-for-nv_drm_fops.f.patch')
 sha256sums=('9ec280cf6544b59d170064e00c365f329c6f28416eba1497c286f4e0295c27ce'
-            'f2f9c418da0c5c0bcee236ae1cace193baf460b15470702781faa31c128d9a92'
-            '1850b14877a87083d1800d0e75714347fc8049a0f4ff1e354769f3058e372e1a')
+            '1850b14877a87083d1800d0e75714347fc8049a0f4ff1e354769f3058e372e1a'
+            '6b888e586818397525f23503da8b369cab96ed4bec0ae6aa3138fde7f87b9f89')
 
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
@@ -37,12 +37,10 @@ prepare() {
     # https://github.com/rpmfusion/nvidia-kmod/blob/master/make_modeset_default.patch
     patch -Np1 < "$srcdir"/make-modeset-fbdev-default.patch -d "${srcdir}/${_pkg}/kernel"
     
-    # patch open kernel module
-    patch -Np1 -i ../kernel612.patch
-    
-    # patch proprietary kernel module
-    cd kernel
-    patch -Np2 -i ../../kernel612.patch
+    # Patch by NVIDIA to fix the 6.12 Kernel opening the display
+    # https://github.com/NVIDIA/open-gpu-kernel-modules/issues/712
+    patch -Np1 < "$srcdir"/nvidia-drm-Set-FOP_UNSIGNED_OFFSET-for-nv_drm_fops.f.patch -d "${srcdir}/${_pkg}/kernel-open"
+    patch -Np1 < "$srcdir"/nvidia-drm-Set-FOP_UNSIGNED_OFFSET-for-nv_drm_fops.f.patch -d "${srcdir}/${_pkg}/kernel"
 }
 
 build() {
