@@ -17,21 +17,14 @@ makedepends=("${_linuxprefix}-headers")
 provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
 options=(!strip)
 _durl="https://us.download.nvidia.com/XFree86/Linux-x86"
-source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
-        nvidia-drm-Set-FOP_UNSIGNED_OFFSET-for-nv_drm_fops.f.patch)
-sha256sums=('27343aa3eecf10e90c5abd6d4edfdcc5bfcc0a2b07eb90e41310f837d06a8fb7'
-            '6b888e586818397525f23503da8b369cab96ed4bec0ae6aa3138fde7f87b9f89')
+source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
+sha256sums=('27343aa3eecf10e90c5abd6d4edfdcc5bfcc0a2b07eb90e41310f837d06a8fb7')
 
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
 prepare() {
     sh "${_pkg}.run" --extract-only
     cd "${_pkg}"
-
-    # Patch by NVIDIA to fix the 6.12 Kernel opening the display
-    # https://github.com/NVIDIA/open-gpu-kernel-modules/issues/712
-    patch -Np1 < "$srcdir"/nvidia-drm-Set-FOP_UNSIGNED_OFFSET-for-nv_drm_fops.f.patch -d "${srcdir}/${_pkg}/kernel-open"
-    patch -Np1 < "$srcdir"/nvidia-drm-Set-FOP_UNSIGNED_OFFSET-for-nv_drm_fops.f.patch -d "${srcdir}/${_pkg}/kernel"
 
 }
 
