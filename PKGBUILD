@@ -4,8 +4,9 @@
 
 _linuxprefix=linux612
 
-pkgname="${_linuxprefix}-nvidia"
-pkgdesc="NVIDIA drivers for linux"
+pkgbase="${_linuxprefix}-nvidia"
+pkgname=("${_linuxprefix}-nvidia" "${_linuxprefix}-nvidia-open")
+pkgdesc="NVIDIA drivers for ${_linuxprefix}"
 pkgver=565.57.01
 pkgrel=3
 arch=('x86_64')
@@ -35,6 +36,7 @@ prepare() {
     # This avoids various issue, when Simplefb is used
     # https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/issues/14
     # https://github.com/rpmfusion/nvidia-kmod/blob/master/make_modeset_default.patch
+    patch -Np1 < "$srcdir"/make-modeset-fbdev-default.patch -d "${srcdir}/${_pkg}/kernel-open"
     patch -Np1 < "$srcdir"/make-modeset-fbdev-default.patch -d "${srcdir}/${_pkg}/kernel"
     
     # Patch by NVIDIA to fix the 6.12 Kernel opening the display
@@ -47,14 +49,28 @@ build() {
     _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
     cd "${_pkg}"
+    make -C kernel-open SYSSRC=/usr/lib/modules/"${_kernver}/build" module
     make -C kernel SYSSRC=/usr/lib/modules/"${_kernver}/build" module
 }
 
-package() {
+package_linux612-nvidia() {
     _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
     cd "${_pkg}"
     install -Dm 644 kernel/*.ko -t "${pkgdir}/usr/lib/modules/${_kernver}/extramodules/"
+
+    # compress each module individually
+    find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
+
+    install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
+}
+
+package_linux612-nvidia-open() {
+    pkgdesc="Open NVIDIA drivers for ${_linuxprefix}"
+    _kernver="$(cat /usr/src/${_linuxprefix}/version)"
+
+    cd "${_pkg}"
+    install -Dm 644 kernel-open/*.ko -t "${pkgdir}/usr/lib/modules/${_kernver}/extramodules/"
 
     # compress each module individually
     find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
