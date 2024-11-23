@@ -67,7 +67,7 @@ package_linux612-nvidia() {
 
 package_linux612-nvidia-open() {
     pkgdesc="Open NVIDIA drivers for ${_linuxprefix}"
-    provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
+    provides=("nvidia-open=${pkgver}" 'NVIDIA-MODULE')
     conflicts=("${_linuxprefix}-nvidia")
     _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
