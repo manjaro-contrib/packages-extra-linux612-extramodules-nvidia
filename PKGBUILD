@@ -1,6 +1,8 @@
 # Maintainer: Bernhard Landauer <bernhard@manjaro.org>
 # Maintainer: Philip Müller <philm[at]manjaro[dot]org>
-# Archlinux maintainer : Thomas Baechler <thomas@archlinux.org>
+# Contributor: Sven-Hendrik Haase <svenstaro@archlinux.org>
+# Contributor: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Thomas Baechler <thomas@archlinux.org>
 
 _linuxprefix=linux612
 
@@ -8,9 +10,9 @@ pkgbase="${_linuxprefix}-nvidia"
 pkgname=("${_linuxprefix}-nvidia" "${_linuxprefix}-nvidia-open")
 pkgdesc="NVIDIA drivers for ${_linuxprefix}"
 pkgver=565.57.01
-pkgrel=4
+pkgrel=5
 arch=('x86_64')
-url="http://www.nvidia.com/"
+url="https://www.nvidia.com/"
 license=('custom')
 groups=("${_linuxprefix}-extramodules")
 depends=("${_linuxprefix}" "nvidia-utils=${pkgver}")
@@ -60,22 +62,23 @@ package_linux612-nvidia() {
     install -Dm 644 kernel/*.ko -t "${pkgdir}/usr/lib/modules/${_kernver}/extramodules/"
 
     # compress each module individually
-    find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
+    find "${pkgdir}" -name '*.ko' -exec zstd --rm -19 {} +
 
     install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
 }
 
 package_linux612-nvidia-open() {
-    pkgdesc="Open NVIDIA drivers for ${_linuxprefix}"
+    pkgdesc="NVIDIA open drivers for ${_linuxprefix}"
     provides=("nvidia-open=${pkgver}" 'NVIDIA-MODULE')
     conflicts=("${_linuxprefix}-nvidia")
+
     _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 
     cd "${_pkg}"
     install -Dm 644 kernel-open/*.ko -t "${pkgdir}/usr/lib/modules/${_kernver}/extramodules/"
 
     # compress each module individually
-    find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
+    find "${pkgdir}" -name '*.ko' -exec zstd --rm -19 {} +
 
     install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
 }
