@@ -42,7 +42,7 @@ package() {
     install -Dm 644 kernel/*.ko -t "${pkgdir}/usr/lib/modules/${_kernver}/extramodules/"
 
     # compress each module individually
-    find "${pkgdir}" -name '*.ko' -exec xz -T1 {} +
+    find "${pkgdir}" -name '*.ko' -exec zstd --rm -19 {} +
 
     install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
 }
