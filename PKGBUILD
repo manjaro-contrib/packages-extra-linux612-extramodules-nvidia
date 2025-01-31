@@ -21,9 +21,9 @@ provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
 options=(!strip)
 _durl="https://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
-        'make-modeset-fbdev-default.patch')
+        '0001-Enable-atomic-kernel-modesetting-by-default.patch')
 sha256sums=('bdf6373649a3abea3355b95b9df2eedb52c97e2e2b2b14e60bf759551a1b5d7c'
-            '1850b14877a87083d1800d0e75714347fc8049a0f4ff1e354769f3058e372e1a')
+            '84ec3947f8ff355d7fb26ab1cd0bf38c23b1e9c6eccf9fa7b51b74f2e66cdfa7')
 
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 
@@ -32,12 +32,12 @@ prepare() {
 
     cd "${_pkg}"
 
-    # Enable modeset and fbdev as default
+    # Enable modeset by default
     # This avoids various issue, when Simplefb is used
     # https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/issues/14
     # https://github.com/rpmfusion/nvidia-kmod/blob/master/make_modeset_default.patch
-    patch -Np1 < "$srcdir"/make-modeset-fbdev-default.patch -d "${srcdir}/${_pkg}/kernel-open"
-    patch -Np1 < "$srcdir"/make-modeset-fbdev-default.patch -d "${srcdir}/${_pkg}/kernel"
+    patch -Np1 < "$srcdir"/0001-Enable-atomic-kernel-modesetting-by-default.patch -d "${srcdir}/${_pkg}/kernel-open"
+    patch -Np1 < "$srcdir"/0001-Enable-atomic-kernel-modesetting-by-default.patch -d "${srcdir}/${_pkg}/kernel"
 }
 
 build() {
