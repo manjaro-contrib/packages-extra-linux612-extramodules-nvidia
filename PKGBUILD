@@ -9,8 +9,8 @@ _linuxprefix=linux612
 pkgbase="${_linuxprefix}-nvidia"
 pkgname=("${_linuxprefix}-nvidia" "${_linuxprefix}-nvidia-open")
 pkgdesc="NVIDIA drivers for ${_linuxprefix}"
-pkgver=570.86.16
-pkgrel=10
+pkgver=570.124.04
+pkgrel=1
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -22,7 +22,7 @@ options=(!strip)
 _durl="https://us.download.nvidia.com/XFree86/Linux-x86"
 source=("${_durl}_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run"
         '0001-Enable-atomic-kernel-modesetting-by-default.patch')
-sha256sums=('4322c58345b7136acf3a3a570367aa3050c75bc6bbfd9fd61252dd4131aeeb67'
+sha256sums=('49e6f9639ae13014bed73a25ab6226fdfa65d619679fb48425d5517c8ca03c39'
             '84ec3947f8ff355d7fb26ab1cd0bf38c23b1e9c6eccf9fa7b51b74f2e66cdfa7')
 
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
