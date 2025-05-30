@@ -7,8 +7,8 @@
 _linuxprefix=linux612
 
 pkgname="${_linuxprefix}-nvidia"
-pkgver=570.153.02
-pkgrel=2
+pkgver=575.57.08
+pkgrel=1
 pkgdesc="NVIDIA kernel modules for ${_linuxprefix}"
 arch=('x86_64')
 url="https://www.nvidia.com/"
